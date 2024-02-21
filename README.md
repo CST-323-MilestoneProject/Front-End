@@ -2,6 +2,9 @@
 This is the front end of the project. We will use Typescript/ React.js and Bootstrap
 
 
+This is a Customer Management System Application
+
+
 clone into repo
 
 run 
