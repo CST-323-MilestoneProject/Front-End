@@ -8,6 +8,6 @@ run
 ```npm install```
 
 then run 
-'''npm start```
+```npm start```
 
 open via http://localhost:8000/
