@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import '../assets/styles/styles.css'
+import axios from 'axios';
 
 type Customer = {
-  id: number;
+  id?: number;
   customerDetails: string;
   firstName: string;
   lastName: string;
@@ -16,9 +17,11 @@ type CustomerDetailProps = {
   customer: Customer;
   updateCustomer: (customer: Customer) => void;
   goBack: () => void;
+  handleDeleteCustomer: (customerId: number) => void;
+  afterDelete: () => void;
 };
 
-const CustomerDetail: React.FC<CustomerDetailProps> = ({ customer, updateCustomer, goBack }) => {
+const CustomerDetail: React.FC<CustomerDetailProps> = ({ customer, updateCustomer, goBack, handleDeleteCustomer, afterDelete }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editedCustomer, setEditedCustomer] = useState(customer);
 
@@ -31,23 +34,55 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({ customer, updateCustome
   };
 
   const handleSubmit = () => {
-    updateCustomer(editedCustomer);
-    setIsEditMode(false);
+    if (editedCustomer.id) {
+      axios.put(`http://localhost:8080/api/customers/${editedCustomer.id}`, editedCustomer)
+        .then(response => {
+          updateCustomer(response.data);
+          setIsEditMode(false);
+          goBack();
+        })
+        .catch(error => {
+          console.error("There was an error updating the customer: ", error);
+
+        });
+    } else {
+      console.error("Error: Customer ID is missing.");
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEditedCustomer({ ...editedCustomer, [e.target.name]: e.target.value });
   };
 
+  const handleDelete = () => {
+    const idToDelete = customer.id;
+    if (typeof idToDelete === 'number') {
+      axios.delete(`http://localhost:8080/api/customers/${idToDelete}`)
+        .then(() => {
+          handleDeleteCustomer(idToDelete);
+          afterDelete();
+        })
+        .catch(error => {
+          console.error("There was an error deleting the customer: ", error);
+        });
+    } else {
+      console.error("Error: Customer ID is missing.");
+
+    }
+  };
+
+
   return (
     <div>
       {isEditMode ? (
         <>
-          <input type="text" value={editedCustomer.firstName} onChange={handleChange} name="firstName" />
-          <input type="text" value={editedCustomer.lastName} onChange={handleChange} name="lastName" />
-          <input type="text" value={editedCustomer.email} onChange={handleChange} name="email" />
-          <input type="text" value={editedCustomer.phoneNumber} onChange={handleChange} name="phoneNumber" />
-          <button onClick={handleSubmit}>Submit</button>
+          <input type="text" value={editedCustomer.customerDetails} onChange={handleChange} name="customerDetails" placeholder="Enter Customer Details" />
+          <input type="text" value={editedCustomer.firstName} onChange={handleChange} name="firstName" placeholder="Enter First Name" />
+          <input type="text" value={editedCustomer.lastName} onChange={handleChange} name="lastName" placeholder="Enter Last Name" />
+          <input type="text" value={editedCustomer.email} onChange={handleChange} name="email" placeholder="Email" />
+          <input type="text" value={editedCustomer.phoneNumber} onChange={handleChange} name="phoneNumber" placeholder="Enter Phone Number" />
+          <button className="btn btn-primary" onClick={handleSubmit}>Submit</button>
+          <button className="btn btn-danger" onClick={handleDelete} style={{ marginTop: '10px' }}>Delete</button>
         </>
       ) : (
         <>

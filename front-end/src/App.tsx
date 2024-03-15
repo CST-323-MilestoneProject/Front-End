@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CustomersList from './components/CustomersList';
 import Login from './components/Login';
-import CustomerDetail from './components/CustomerDetail'; // Assuming this is the default export
+import CustomerDetail from './components/CustomerDetail';
 
-// Define the Customer type
+
 type Customer = {
-  id: number;
+  id?: number;
   customerDetails: string;
   firstName: string;
   lastName: string;
@@ -20,17 +20,21 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const fetchCustomers = () => {
+    axios.get<Customer[]>('http://localhost:8080/api/customers')
+      .then(response => {
+        setCustomers(response.data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error("There was an error fetching the customers: ", error);
+        setLoading(false);
+      });
+  };
+
   useEffect(() => {
     if (loggedIn) {
-      axios.get<Customer[]>('/customers.json')
-        .then(response => {
-          setCustomers(response.data);
-          setLoading(false);
-        })
-        .catch(error => {
-          console.error("There was an error fetching the customers: ", error);
-          setLoading(false);
-        });
+      fetchCustomers();
     }
   }, [loggedIn]);
 
@@ -38,7 +42,7 @@ function App() {
     setLoading(true);
     setTimeout(() => {
       setLoggedIn(true);
-    }, 1000); // Simulate a loading time
+    }, 1000);
   };
 
   const selectCustomer = (customer: Customer) => {
@@ -46,12 +50,37 @@ function App() {
   };
 
   const updateCustomer = (updatedCustomer: Customer) => {
-      // Placeholder for the API call: log the updated customer to the console
-  console.log('Updating customer:', updatedCustomer);
+    if (updatedCustomer.id) {
+      axios.put(`http://localhost:8080/api/customers/${updatedCustomer.id}`, updatedCustomer)
+        .then(response => {
 
-  // Simulate a successful API call by updating the state
-  setCustomers(customers.map(c => c.id === updatedCustomer.id ? updatedCustomer : c));
-  setSelectedCustomer(null); // Deselect customer after update
+          setCustomers(customers.map(c => c.id === updatedCustomer.id ? response.data : c));
+          setSelectedCustomer(null);
+        })
+        .catch(error => {
+          console.error("There was an error updating the customer: ", error);
+        });
+    }
+  };
+
+  const handleDeleteCustomer = (customerId: number) => {
+    setCustomers(customers.filter(c => c.id !== customerId));
+  };
+
+  const afterDelete = () => {
+    setSelectedCustomer(null);
+  };
+
+  const addCustomer = (newCustomer: Omit<Customer, 'id'>) => {
+    axios.post<Customer>('http://localhost:8080/api/customers', newCustomer)
+      .then(response => {
+        const addedCustomer = response.data;
+        console.log('this is new customer', newCustomer);
+        setCustomers([...customers, addedCustomer]);
+      })
+      .catch(error => {
+        console.error("There was an error adding the customer: ", error);
+      });
   };
 
   return (
@@ -65,9 +94,11 @@ function App() {
           customer={selectedCustomer}
           updateCustomer={updateCustomer}
           goBack={() => setSelectedCustomer(null)}
+          handleDeleteCustomer={handleDeleteCustomer}
+          afterDelete={afterDelete}
         />
       ) : (
-        <CustomersList customers={customers} selectCustomer={selectCustomer} />
+        <CustomersList customers={customers} selectCustomer={selectCustomer} addCustomer={addCustomer} />
       )}
     </div>
   );
