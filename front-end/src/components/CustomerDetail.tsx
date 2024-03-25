@@ -35,7 +35,7 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({ customer, updateCustome
 
   const handleSubmit = () => {
     if (editedCustomer.id) {
-      axios.put(`http://localhost:8080/api/customers/${editedCustomer.id}`, editedCustomer)
+      axios.put(`https://milestonebackend.azurewebsites.net/api/customers/${editedCustomer.id}`, editedCustomer)
         .then(response => {
           updateCustomer(response.data);
           setIsEditMode(false);
@@ -57,7 +57,7 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({ customer, updateCustome
   const handleDelete = () => {
     const idToDelete = customer.id;
     if (typeof idToDelete === 'number') {
-      axios.delete(`http://localhost:8080/api/customers/${idToDelete}`)
+      axios.delete(`https://milestonebackend.azurewebsites.net/api/customers/${idToDelete}`)
         .then(() => {
           handleDeleteCustomer(idToDelete);
           afterDelete();

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import CustomersList from './components/CustomersList';
 import Login from './components/Login';
@@ -21,7 +21,7 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   const fetchCustomers = () => {
-    axios.get<Customer[]>('http://localhost:8080/api/customers')
+    axios.get<Customer[]>('https://milestonebackend.azurewebsites.net/api/customers')
       .then(response => {
         setCustomers(response.data);
         setLoading(false);
@@ -51,7 +51,7 @@ function App() {
 
   const updateCustomer = (updatedCustomer: Customer) => {
     if (updatedCustomer.id) {
-      axios.put(`http://localhost:8080/api/customers/${updatedCustomer.id}`, updatedCustomer)
+      axios.put(`https://milestonebackend.azurewebsites.net/api/customers/${updatedCustomer.id}`, updatedCustomer)
         .then(response => {
 
           setCustomers(customers.map(c => c.id === updatedCustomer.id ? response.data : c));
@@ -72,7 +72,7 @@ function App() {
   };
 
   const addCustomer = (newCustomer: Omit<Customer, 'id'>) => {
-    axios.post<Customer>('http://localhost:8080/api/customers', newCustomer)
+    axios.post<Customer>('https://milestonebackend.azurewebsites.net/api/customers', newCustomer)
       .then(response => {
         const addedCustomer = response.data;
         console.log('this is new customer', newCustomer);

@@ -1,6 +1,8 @@
-import React from 'react';
+interface LoginProps {
+  onLogin: () => void;
+}
 
-const Login = ({ onLogin }) => {
+const Login:React.FC<LoginProps> = ({ onLogin }) => {
   return (
     <div className="jumbotron text-center">
       <h1 className="display-4">Welcome</h1>
