@@ -91,6 +91,7 @@ function App() {
       })
       .catch(error => {
         // console.error("There was an error adding the customer: ", error);
+        //TEST
         Logger.error("There was an error adding the customer: ", error);
       });
   };
