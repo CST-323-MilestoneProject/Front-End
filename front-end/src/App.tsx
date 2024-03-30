@@ -3,6 +3,7 @@ import axios from 'axios';
 import CustomersList from './components/CustomersList';
 import Login from './components/Login';
 import CustomerDetail from './components/CustomerDetail';
+import Logger from './utility/Logger';
 
 
 type Customer = {
@@ -25,9 +26,11 @@ function App() {
       .then(response => {
         setCustomers(response.data);
         setLoading(false);
+        Logger.debug('Customers fetched successfully', response.data);
       })
       .catch(error => {
-        console.error("There was an error fetching the customers: ", error);
+        // console.error("There was an error fetching the customers: ", error);
+        Logger.error("There was an error fetching the customers: ", error);
         setLoading(false);
       });
   };
@@ -56,10 +59,15 @@ function App() {
 
           setCustomers(customers.map(c => c.id === updatedCustomer.id ? response.data : c));
           setSelectedCustomer(null);
+          Logger.debug(`Customer with ID: ${updatedCustomer.id} updated successfully.`);
+
         })
         .catch(error => {
-          console.error("There was an error updating the customer: ", error);
+          // console.error("There was an error updating the customer: ", error);
+          Logger.error(`There was an error updating the customer with ID: ${updatedCustomer.id}: `, error);
         });
+    } else {
+      Logger.warn("Attempted to update a customer without an ID")
     }
   };
 
