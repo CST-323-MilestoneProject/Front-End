@@ -23,6 +23,7 @@ jobs:
 
     - name: Install Dependencies
       run: npm install
+      working-directory: ${{ github.workspace }}/front-end
 
     - name: Build the project
       run: npm run build
