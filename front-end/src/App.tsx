@@ -72,7 +72,9 @@ function App() {
   };
 
   const handleDeleteCustomer = (customerId: number) => {
+    Logger.info(`Deleting customer with ID: ${customerId}`);
     setCustomers(customers.filter(c => c.id !== customerId));
+    Logger.debug(`Customer with ID: ${customerId} removed from the local state.`);
   };
 
   const afterDelete = () => {
@@ -83,11 +85,13 @@ function App() {
     axios.post<Customer>('https://milestonebackend.azurewebsites.net/api/customers', newCustomer)
       .then(response => {
         const addedCustomer = response.data;
-        console.log('this is new customer', newCustomer);
+        // console.log('this is new customer', newCustomer);
+        Logger.debug('New customer added successfully', addedCustomer);
         setCustomers([...customers, addedCustomer]);
       })
       .catch(error => {
-        console.error("There was an error adding the customer: ", error);
+        // console.error("There was an error adding the customer: ", error);
+        Logger.error("There was an error adding the customer: ", error);
       });
   };
 
