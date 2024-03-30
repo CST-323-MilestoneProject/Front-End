@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/styles.css'
+import Logger from '../utility/Logger';
 
 type Customer = {
   id?: number;
@@ -22,16 +23,27 @@ const CustomersList: React.FC<CustomersListProps> = ({ customers, selectCustomer
   const [showModal, setShowModal] = useState(false);
   const [newCustomer, setNewCustomer] = useState<Customer>({ customerDetails: '', firstName: '', lastName: '', email: '', phoneNumber: '' });
 
-  const handleShow = () => setShowModal(true);
-  const handleClose = () => setShowModal(false);
+  const handleShow = () => {
+    Logger.info('Opening the Add Customer modal');
+    setShowModal(true);
+  }
+  const handleClose = () => {
+    Logger.info('Closing the Add Customer modal');
+    setShowModal(false);
+
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewCustomer({ ...newCustomer, [e.target.name]: e.target.value });
+    const updatedCustomer = { ...newCustomer, [e.target.name]: e.target.value };
+    setNewCustomer(updatedCustomer);
+    Logger.debug('Form value changed', updatedCustomer);
   };
 
   const handleSubmit = () => {
+    Logger.info('Submitting new customer', newCustomer);
     addCustomer(newCustomer);
     handleClose();
+
   };
 
   return (

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/styles.css'
 import axios from 'axios';
+import Logger from '../utility/Logger';
 
 type Customer = {
   id?: number;
@@ -26,48 +27,58 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({ customer, updateCustome
   const [editedCustomer, setEditedCustomer] = useState(customer);
 
   const handleEditClick = () => {
+    Logger.info(`Entering edit mode for customer ID: ${customer.id}`);
     setIsEditMode(true);
   };
 
   const handleBackClick = () => {
+    Logger.info('Navigating back from CustomerDetail');
     goBack();
   };
 
   const handleSubmit = () => {
     if (editedCustomer.id) {
+      Logger.info(`Submitting updated customer ID: ${editedCustomer.id}`, editedCustomer);
       axios.put(`https://milestonebackend.azurewebsites.net/api/customers/${editedCustomer.id}`, editedCustomer)
         .then(response => {
           updateCustomer(response.data);
           setIsEditMode(false);
           goBack();
+          Logger.debug(`Customer ID: ${editedCustomer.id} updated successfully`);
         })
         .catch(error => {
-          console.error("There was an error updating the customer: ", error);
-
+          // console.error("There was an error updating the customer: ", error);
+          Logger.error(`There was an error updating the customer ID: ${editedCustomer.id}`, error);
         });
     } else {
-      console.error("Error: Customer ID is missing.");
+      // console.error("Error: Customer ID is missing.");
+      Logger.warn("Attempted to update a customer without an ID");
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEditedCustomer({ ...editedCustomer, [e.target.name]: e.target.value });
+    const updatedCustomer = { ...editedCustomer, [e.target.name]: e.target.value };
+    setEditedCustomer(updatedCustomer);
+    Logger.debug(`Customer ID: ${customer.id} field ${e.target.name} changed`, updatedCustomer);
   };
 
   const handleDelete = () => {
     const idToDelete = customer.id;
     if (typeof idToDelete === 'number') {
+      Logger.info(`Initiating delete for customer ID: ${idToDelete}`);
       axios.delete(`https://milestonebackend.azurewebsites.net/api/customers/${idToDelete}`)
         .then(() => {
           handleDeleteCustomer(idToDelete);
           afterDelete();
+          Logger.debug(`Customer ID: ${idToDelete} deleted successfully`);
         })
         .catch(error => {
-          console.error("There was an error deleting the customer: ", error);
+          // console.error("There was an error deleting the customer: ", error);
+          Logger.error(`There was an error deleting the customer ID: ${idToDelete}`, error);
         });
     } else {
-      console.error("Error: Customer ID is missing.");
-
+      // console.error("Error: Customer ID is missing.");
+      Logger.warn("Attempted to delete a customer without an ID");
     }
   };
 
