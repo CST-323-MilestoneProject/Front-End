@@ -27,6 +27,7 @@ jobs:
 
     - name: Build the project
       run: npm run build
+      working-directory: ${{ github.workspace }}/front-end
 
     - name: Deploy to Google Cloud
       uses: google-github-actions/deploy-appengine@v0.2.0
