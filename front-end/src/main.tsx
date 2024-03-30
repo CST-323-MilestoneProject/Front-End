@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './assets/styles/styles.css';
+import Logger from './utility/Logger';
+
+Logger.info('App initiation started');
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
