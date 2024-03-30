@@ -10,6 +10,11 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
+      with:
+        ref: main
+
+    - name: Navigate to Front-End/front-end directory
+      run: cd Front-End/front-end
 
     - name: Install Node.js
       uses: actions/setup-node@v4
