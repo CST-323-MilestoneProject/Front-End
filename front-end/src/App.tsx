@@ -5,7 +5,6 @@ import Login from './components/Login';
 import CustomerDetail from './components/CustomerDetail';
 import Logger from './utility/Logger';
 
-
 type Customer = {
   id?: number;
   customerDetails: string;
@@ -21,6 +20,14 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    // Add Content Security Policy meta tag
+    const meta = document.createElement('meta');
+    meta.httpEquiv = 'Content-Security-Policy';
+    meta.content = "default-src 'self'; connect-src 'self' http://milestone.us-west-2.elasticbeanstalk.com";
+    document.head.appendChild(meta);
+  }, []);
+
   const fetchCustomers = () => {
     axios.get<Customer[]>('http://milestone.us-west-2.elasticbeanstalk.com/api/customers')
       .then(response => {
@@ -29,7 +36,6 @@ function App() {
         Logger.debug('Customers fetched successfully', response.data);
       })
       .catch(error => {
-        // console.error("There was an error fetching the customers: ", error);
         Logger.error("There was an error fetching the customers: ", error);
         setLoading(false);
       });
@@ -56,14 +62,11 @@ function App() {
     if (updatedCustomer.id) {
       axios.put(`http://milestone.us-west-2.elasticbeanstalk.com/api/customers/${updatedCustomer.id}`, updatedCustomer)
         .then(response => {
-
           setCustomers(customers.map(c => c.id === updatedCustomer.id ? response.data : c));
           setSelectedCustomer(null);
           Logger.debug(`Customer with ID: ${updatedCustomer.id} updated successfully.`);
-
         })
         .catch(error => {
-          // console.error("There was an error updating the customer: ", error);
           Logger.error(`There was an error updating the customer with ID: ${updatedCustomer.id}: `, error);
         });
     } else {
@@ -85,13 +88,10 @@ function App() {
     axios.post<Customer>('http://milestone.us-west-2.elasticbeanstalk.com/api/customers', newCustomer)
       .then(response => {
         const addedCustomer = response.data;
-        // console.log('this is new customer', newCustomer);
         Logger.debug('New customer added successfully', addedCustomer);
         setCustomers([...customers, addedCustomer]);
       })
       .catch(error => {
-        // console.error("There was an error adding the customer: ", error);
-        //TEST
         Logger.error("There was an error adding the customer: ", error);
       });
   };
