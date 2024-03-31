@@ -22,7 +22,7 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   const fetchCustomers = () => {
-    axios.get<Customer[]>('https://milestone.us-west-2.elasticbeanstalk.com/api/customers')
+    axios.get<Customer[]>('http://milestone.us-west-2.elasticbeanstalk.com/api/customers')
       .then(response => {
         setCustomers(response.data);
         setLoading(false);
@@ -54,7 +54,7 @@ function App() {
 
   const updateCustomer = (updatedCustomer: Customer) => {
     if (updatedCustomer.id) {
-      axios.put(`https://milestone.us-west-2.elasticbeanstalk.com/api/customers/${updatedCustomer.id}`, updatedCustomer)
+      axios.put(`http://milestone.us-west-2.elasticbeanstalk.com/api/customers/${updatedCustomer.id}`, updatedCustomer)
         .then(response => {
 
           setCustomers(customers.map(c => c.id === updatedCustomer.id ? response.data : c));
@@ -82,7 +82,7 @@ function App() {
   };
 
   const addCustomer = (newCustomer: Omit<Customer, 'id'>) => {
-    axios.post<Customer>('https://milestone.us-west-2.elasticbeanstalk.com/api/customers', newCustomer)
+    axios.post<Customer>('http://milestone.us-west-2.elasticbeanstalk.com/api/customers', newCustomer)
       .then(response => {
         const addedCustomer = response.data;
         // console.log('this is new customer', newCustomer);
