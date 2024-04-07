@@ -22,7 +22,7 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   const fetchCustomers = () => {
-    axios.get<Customer[]>('https://milestonebackend.azurewebsites.net/api/customers')
+    axios.get<Customer[]>('https://gcu-cst-323-419521.uw.r.appspot.com/api/customers')
       .then(response => {
         setCustomers(response.data);
         setLoading(false);
@@ -54,7 +54,7 @@ function App() {
 
   const updateCustomer = (updatedCustomer: Customer) => {
     if (updatedCustomer.id) {
-      axios.put(`https://milestonebackend.azurewebsites.net/api/customers/${updatedCustomer.id}`, updatedCustomer)
+      axios.put(`https://gcu-cst-323-419521.uw.r.appspot.com/api/customers/${updatedCustomer.id}`, updatedCustomer)
         .then(response => {
 
           setCustomers(customers.map(c => c.id === updatedCustomer.id ? response.data : c));
@@ -82,7 +82,7 @@ function App() {
   };
 
   const addCustomer = (newCustomer: Omit<Customer, 'id'>) => {
-    axios.post<Customer>('https://milestonebackend.azurewebsites.net/api/customers', newCustomer)
+    axios.post<Customer>('https://gcu-cst-323-419521.uw.r.appspot.com/api/customers', newCustomer)
       .then(response => {
         const addedCustomer = response.data;
         // console.log('this is new customer', newCustomer);
