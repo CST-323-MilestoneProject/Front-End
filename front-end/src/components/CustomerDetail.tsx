@@ -1,9 +1,11 @@
+// Import statements for required modules and styles
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/styles.css'
 import axios from 'axios';
 import Logger from '../utility/Logger';
 
+// Type definition for a Customer object
 type Customer = {
   id?: number;
   customerDetails: string;
@@ -13,7 +15,7 @@ type Customer = {
   phoneNumber: string;
 };
 
-
+// Props type for the CustomerDetail component
 type CustomerDetailProps = {
   customer: Customer;
   updateCustomer: (customer: Customer) => void;
@@ -22,20 +24,24 @@ type CustomerDetailProps = {
   afterDelete: () => void;
 };
 
+// CustomerDetail functional component
 const CustomerDetail: React.FC<CustomerDetailProps> = ({ customer, updateCustomer, goBack, handleDeleteCustomer, afterDelete }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editedCustomer, setEditedCustomer] = useState(customer);
 
+    // Function to initiate edit mode
   const handleEditClick = () => {
     Logger.info(`Entering edit mode for customer ID: ${customer.id}`);
     setIsEditMode(true);
   };
 
+  // Function to handle the back action
   const handleBackClick = () => {
     Logger.info('Navigating back from CustomerDetail');
     goBack();
   };
 
+  // Function to handle form submission for updating customer details
   const handleSubmit = () => {
     if (editedCustomer.id) {
       Logger.info(`Submitting updated customer ID: ${editedCustomer.id}`, editedCustomer);
@@ -56,12 +62,14 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({ customer, updateCustome
     }
   };
 
+  // Function to handle changes in the form fields and update the editedCustomer state
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const updatedCustomer = { ...editedCustomer, [e.target.name]: e.target.value };
     setEditedCustomer(updatedCustomer);
     Logger.debug(`Customer ID: ${customer.id} field ${e.target.name} changed`, updatedCustomer);
   };
 
+  // Function to handle the deletion of the current customer
   const handleDelete = () => {
     const idToDelete = customer.id;
     if (typeof idToDelete === 'number') {
@@ -83,6 +91,9 @@ const CustomerDetail: React.FC<CustomerDetailProps> = ({ customer, updateCustome
   };
 
 
+  // Render the customer details view
+  // If in edit mode, render form fields with submit and delete button
+  // Otherwise, display customer details with an edit button
   return (
     <div>
       {isEditMode ? (

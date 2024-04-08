@@ -1,9 +1,11 @@
+// Import statements for required modules and Bootstrap components
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/styles/styles.css'
 import Logger from '../utility/Logger';
 
+// Type definition for a Customer object
 type Customer = {
   id?: number;
   customerDetails: string;
@@ -13,32 +15,39 @@ type Customer = {
   phoneNumber: string;
 };
 
+// Props type for the CustomersList component
 type CustomersListProps = {
   customers: Customer[];
   selectCustomer: (customer: Customer) => void;
   addCustomer: (customer: Customer) => void;
 };
 
+// CustomersList functional component
 const CustomersList: React.FC<CustomersListProps> = ({ customers, selectCustomer, addCustomer }) => {
   const [showModal, setShowModal] = useState(false);
   const [newCustomer, setNewCustomer] = useState<Customer>({ customerDetails: '', firstName: '', lastName: '', email: '', phoneNumber: '' });
 
+  // Function to open the modal for adding a new customer
   const handleShow = () => {
     Logger.info('Opening the Add Customer modal');
     setShowModal(true);
   }
+
+  // Function to close the modal
   const handleClose = () => {
     Logger.info('Closing the Add Customer modal');
     setShowModal(false);
 
   }
 
+  // Function to handle changes in the form input fields
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const updatedCustomer = { ...newCustomer, [e.target.name]: e.target.value };
     setNewCustomer(updatedCustomer);
     Logger.debug('Form value changed', updatedCustomer);
   };
 
+  // Function to handle the submission of the new customer form
   const handleSubmit = () => {
     Logger.info('Submitting new customer', newCustomer);
     addCustomer(newCustomer);
@@ -46,6 +55,9 @@ const CustomersList: React.FC<CustomersListProps> = ({ customers, selectCustomer
 
   };
 
+
+  // JSX to return from the component, rendering a button to add a customer,
+  // a modal with a form for adding a new customer, and a list of customers
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
